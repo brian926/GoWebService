@@ -1,9 +1,10 @@
 package controllers
 
 import (
-	"strconv"
+	"encoding/json"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/pluralsight/webservice/models"
 )
@@ -24,11 +25,11 @@ func (uc userController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		matches := uc.userIDPattern.FindStringSubmatch(r.URL.Path)
-		if len(matches) == 0{
+		if len(matches) == 0 {
 			w.WriteHeader(http.StatusNotFound)
 		}
 		id, err := strconv.Atoi(matches[1])
-		if err != nil{
+		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 		}
 		switch r.Method {
@@ -82,12 +83,12 @@ func (uc *userController) put(id int, w http.ResponseWriter, r *http.Request) {
 	}
 	if id != u.ID {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("ID of submitted user must match ID in URL")
+		w.Write([]byte("ID of submitted user must match ID in URL"))
 		return
 	}
 	u, err = models.UpdateUser(u)
 	if err != nil {
-		w.Writeheader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
